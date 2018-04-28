@@ -10,7 +10,7 @@ if [[ $assets =~ "$release_n" ]]; then
 fi
 
 lua_p=$(apk search -q lua[0-9].[0-9]-dev | sort | tail -1)
-lua_v=${lua_v/-*}
+lua_v=${lua_p/-*}
 ssl=openssl
 apk add alpine-sdk wget $lua_p pcre2-dev $ssl-dev linux-headers zlib-dev
 
