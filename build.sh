@@ -37,6 +37,7 @@ make -j$(nproc) \
      LUA_LD_FLAGS="-lz -L/usr/lib/$lua_v -static"
 
 strip -s haproxy
-mv haproxy "haproxy-$release_n"
+mv haproxy /srv/haproxy
+git tag "$release_n"
 
 echo "export NEW_RELEASE=true release_n=$release_n" > /srv/result.env
