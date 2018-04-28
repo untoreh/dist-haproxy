@@ -10,6 +10,7 @@ services:
 before_script:
 - docker run --env-file build.env -d --name pinect -v $PWD:/srv -v /dev:/dev -v /sys:/sys --privileged --cap-add=ALL -w /srv alpine /bin/sleep 36000
 script:
+- docker exec pinect apk add --update-cache wget jq bash
 - docker exec pinect ./build.sh
 before_deploy:
 - . ./result.env

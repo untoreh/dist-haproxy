@@ -1,8 +1,6 @@
 #!/bin/bash
 
 cd /srv
-apk upgrade --update-cache
-apk add wget jq
 last_release=$(wget -qO- http://www.haproxy.org/ | grep "Stable version" -B 10 -m1 | grep -o "/download.*tar.gz")
 release_n=$(echo "$last_release" | sed -r 's/.*-(.*).tar.gz/\1/')
 assets=$(wget -qO- https://api.github.com/repos/$TRAVIS_REPO_SLUG/releases/latest | jq -r '.assets[].name')
