@@ -3,8 +3,13 @@
 cd /srv
 last_release=$(wget -qO- http://www.haproxy.org/ | grep "Stable version" -B 10 -m1 | grep -o "/download.*tar.gz")
 release_n=$(echo "$last_release" | sed -r 's/.*-(.*).tar.gz/\1/')
-assets=$(wget -qO- https://api.github.com/repos/$TRAVIS_REPO_SLUG/releases/latest | jq -r '.assets[].name')
-if [[ $assets =~ "$release_n" ]]; then
+# assets=$(wget -qO- https://api.github.com/repos/$TRAVIS_REPO_SLUG/releases/latest | jq -r '.assets[].name')
+last_r=$(git describe --tags --abbrev=0)
+if [ -z "$last_r" -o -z "$release_n" ]; then
+    echo "export NEW_RELEASE=false" > /srv/result.env
+    exit
+fi
+if [ "$last_r" = "$release_n" ]; then
     echo "export NEW_RELEASE=false" > /srv/result.env
     exit
 fi
@@ -37,6 +42,7 @@ make -j$(nproc) \
      LUA_LD_FLAGS="-lz -L/usr/lib/$lua_v -static"
 
 strip -s haproxy
-mv haproxy "haproxy-$release_n"
+mv haproxy /srv/haproxy
+git tag "$release_n"
 
 echo "export NEW_RELEASE=true release_n=$release_n" > /srv/result.env

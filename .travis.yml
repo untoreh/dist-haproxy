@@ -10,18 +10,17 @@ services:
 before_script:
 - docker run --env-file build.env -d --name pinect -v $PWD:/srv -v /dev:/dev -v /sys:/sys --privileged --cap-add=ALL -w /srv alpine /bin/sleep 36000
 script:
-- docker exec pinect apk add --update-cache wget jq bash
+- docker exec pinect apk add --update-cache wget jq bash git
 - docker exec pinect ./build.sh
-before_deploy:
-- . ./result.env
+# before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: NJ3UBflN76WmG/OqO3OZ0aXWUGXCJoZib0DrRdw8Z9KOmpqHTjT7WD+UU65mq39ea6k45aMw3iZv6LYslc1e6LwnJPVt4bg8R8zbSVTv4EQOxvo36eBrZLlxst1GU7fAqq9v7QFBbbQFVkDN9zLkGutZSvTHxxfSnNMX23ohmvaa1LfKX8Ta95BXCh4INOahdgog9KO9Zg/fNe09D7pAjayMQPKSiZ02F9FNsMhSkLW9R2s6Scc/6/V4XdKQK7XFhmFAmVTh/qeYjak9eX/X+8Ojv2KE+wSfyJSt+96WeUXwj17qH1V5kQiKZYlgwxIm1oMClkDtiCdnrlaLLYyc+JJ4xUOz67gwBNXgoa0JTVNlPRjNlfo7sIGY470wZx5LlZW5w+d2vi/fa9FtsHaREat8Di01d51XgP/lafs9L3k9BlHjONTHhpKBvY/5D0bMT3s0E9m5YBpyUsHnctb0LiYih10vJ/zERaOIJ/Motoi8UXtW13xu5myzshJCRv9i4IVgG4nIP7I0zm6bFmNy4IyPZOBGyYKj1D2XQN8q5nz8DHdAwMrLy+RGrnzx2UXh5+9Z6CVyGxWjZl8OSZa9sF3ZmrKmcPRqiG+U3PFddS7p8oGV/N+XE6hhxXW93G6gFyXv6fWtPSMPGW8j7qgzmJgGewPK99Z+eZ/SIQ3Z4Vo=
+    secure: OkUr9YOOPPuFfEpFcuXILZbsRBl76pUsfRR4srLWhr7e7m7ynU4tkrLzsQtLrrnqQiOnaiQb9g0Uw9CDQ2qHRITIyRex/v3rLD+/nPdGfsc5EhP+y39LY0tu8saVR/E9d6LjZ/kJqODVskDXcIDu9O8UfkwaE60MJpslp7m2Syp6gCC6EwnSamPyGGp/vguXvcQEaeDvbvERnH20QP5sgC7a5p16jnyXN9k4trBViZ4OUOPsbGecHMPkN7Mxkl3cARI/uQtLV5fZvrwys6iQMgi4iKa1rNFmJjvxxAs7HlXCDcMK16IX+6wb2hzo42sIQY9/vdzWv53CU6PBtNjDReWrInPPVcvjtXh3LKaFkBj1w742zymci5LzYge3uKqisAZ0w74YZUiLaphHI5x/9QJFqdI0aj7hCDxef3174gNhY+q0Qz8CSNE92fGc2BvDY7xAoGJlRRiHRWRQqM5vx2PpiuYneVYvgGLV+sbWvSy2P38+9jwg0K/lSfUg1sxWG1hV9zNtKwUO0kSM1DUxOsVyqlzsAfdXWV7XeRW1gt4lSKCiVJtmGi/xj0wmllnDSKauVG4EU449W3UgfKjn3+6/9VbhTuNS3V4jpD3Ux7O31mm1a0kyb1i/RuFC8s8lhzGiTc1BWg9uvQEs7tsEoSoCLPTOjBIE+H8V00WtM4k=
   # file_glob: true
   file:
-    - "haproxy-$release_n" ## release_n set by build script on successful build
+    - "haproxy" ## release_n set by build script on successful build
   skip_cleanup: true
   on:
-    condition: "$NEW_RELEASE = true"
+    condition: "$(. ./result.env; echo $NEW_RELEASE) = true"
 # after_deploy:
