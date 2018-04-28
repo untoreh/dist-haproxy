@@ -1,7 +1,7 @@
 sudo: false
-before_install:
-- sudo apt -qq update
-- sudo apt install -y jq
+# before_install:
+# - sudo apt -qq update
+# - sudo apt install -y jq
 install:
 - . ./travis-helper.sh
 services:
